@@ -10,13 +10,12 @@ class ToastService {
     toastification.show(
       context: context,
       type: ToastificationType.success,
-      style: ToastificationStyle.flat,
+      style: ToastificationStyle.minimal,
       autoCloseDuration: const Duration(seconds: 3),
       title: Text(title),
       description: Text(description),
       alignment: Alignment.topCenter,
       showProgressBar: true,
-      closeButtonShowType: CloseButtonShowType.none,
     );
   }
 
@@ -28,13 +27,12 @@ class ToastService {
     toastification.show(
       context: context,
       type: ToastificationType.error,
-      style: ToastificationStyle.flat,
+      style: ToastificationStyle.minimal,
       autoCloseDuration: const Duration(seconds: 3),
       title: Text(title),
       description: Text(description),
       alignment: Alignment.topCenter,
       showProgressBar: true,
-      closeButtonShowType: CloseButtonShowType.none,
     );
   }
 
@@ -46,13 +44,12 @@ class ToastService {
     toastification.show(
       context: context,
       type: ToastificationType.warning,
-      style: ToastificationStyle.flat,
+      style: ToastificationStyle.minimal,
       autoCloseDuration: const Duration(seconds: 3),
       title: Text(title),
       description: Text(description),
       alignment: Alignment.topCenter,
       showProgressBar: true,
-      closeButtonShowType: CloseButtonShowType.none,
     );
   }
 
@@ -64,13 +61,12 @@ class ToastService {
     toastification.show(
       context: context,
       type: ToastificationType.info,
-      style: ToastificationStyle.flat,
+      style: ToastificationStyle.minimal,
       autoCloseDuration: const Duration(seconds: 3),
       title: Text(title),
       description: Text(description),
       alignment: Alignment.topCenter,
       showProgressBar: true,
-      closeButtonShowType: CloseButtonShowType.none,
     );
   }
 }

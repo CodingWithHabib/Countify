@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
-import 'app_colors.dart';
+import '../services/theme_service.dart';
 import 'app_theme_colors.dart';
+
 class LightTheme {
   static ThemeData get theme {
+    final primary = ThemeService.primaryColor;
+
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      primaryColor: primary,
 
       scaffoldBackgroundColor: const Color(0xFFF8FAFC),
 
       cardColor: Colors.white,
 
       colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.primary,
+        seedColor: primary,
+        primary: primary,
         brightness: Brightness.light,
       ),
 

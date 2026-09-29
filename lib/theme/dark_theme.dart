@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
+import '../services/theme_service.dart';
 import 'app_colors.dart';
 import 'app_theme_colors.dart';
+import 'default_theme.dart';
+
 class DarkTheme {
   static ThemeData get theme {
+    final primary = ThemeService.primaryColor;
+
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      primaryColor: primary,
 
-      scaffoldBackgroundColor: AppColors.background,
+      scaffoldBackgroundColor: DefaultTheme.background,
 
       cardColor: AppColors.card,
 
       colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.primary,
+        seedColor: primary,
+        primary: primary,
         brightness: Brightness.dark,
       ),
 
@@ -22,16 +29,16 @@ class DarkTheme {
         elevation: 0,
         centerTitle: true,
       ),
-      extensions: const [
+      extensions: [
         AppThemeColors(
-          gradientStart: Color(0xFF0F172A),
-          gradientMiddle: Color(0xFF1E293B),
-          gradientEnd: Color(0xFF334155),
+          gradientStart: DefaultTheme.backgroundGradient[0],
+          gradientMiddle: DefaultTheme.backgroundGradient[1],
+          gradientEnd: DefaultTheme.backgroundGradient[2],
 
-          card: AppColors.card,
+          card: DefaultTheme.surface,
 
           primaryText: Colors.white,
-          secondaryText: Color(0xFFCBD5E1),
+          secondaryText: const Color(0xFFCBD5E1),
         ),
       ],
       snackBarTheme: const SnackBarThemeData(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme_colors.dart';
+import 'live_animated_icon.dart';
+
 class StatisticsCard extends StatelessWidget {
   final int increaseCount;
   final int decreaseCount;
@@ -12,162 +14,166 @@ class StatisticsCard extends StatelessWidget {
     required this.resetCount,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    final colors =
-    Theme.of(context).extension<AppThemeColors>()!;
-    return Card(
-      elevation: 12,
-        shadowColor: Colors.blue.withOpacity(.20),
-      color: colors.card,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+  int get total => increaseCount + decreaseCount + resetCount;
 
-        side: BorderSide(
-          color: Colors.blue.withOpacity(.30),
-          width: 1.5,
+  Widget buildStatTile({
+    required String title,
+    required int value,
+    required IconData icon,
+    required Color color,
+    required AppThemeColors colors,
+    required bool isDark,
+  }) {
+    final double pct = total > 0 ? (value / total) : 0.0;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: isDark
+            ? color.withOpacity(0.08)
+            : color.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: color.withOpacity(0.25),
         ),
       ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              LiveAnimatedIcon(
+                icon: icon,
+                color: color,
+                size: 40,
+                iconSize: 18,
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: colors.primaryText,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      total > 0
+                          ? "${(pct * 100).toStringAsFixed(1)}% of total actions"
+                          : "No actions recorded",
+                      style: TextStyle(
+                        color: colors.secondaryText,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                "$value",
+                style: TextStyle(
+                  color: color,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          // Percentage Bar
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: LinearProgressIndicator(
+              value: pct,
+              minHeight: 5,
+              backgroundColor: isDark
+                  ? Colors.white.withOpacity(0.08)
+                  : Colors.black.withOpacity(0.06),
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<AppThemeColors>()!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Card(
+      elevation: 0,
+      color: Colors.transparent,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          vertical: 20,
-          horizontal: 20,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: Colors.blue.withOpacity(0.25),
+            width: 1.2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.blue.withOpacity(isDark ? 0.12 : 0.08),
+              blurRadius: 18,
+              offset: const Offset(0, 6),
+            ),
+          ],
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(.12),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(
-                    Icons.bar_chart_rounded,
-                    color: Colors.blue,
-                    size: 22,
-                  ),
+                const LiveAnimatedIcon(
+                  icon: Icons.pie_chart_rounded,
+                  color: Colors.purple,
+                  size: 38,
+                  iconSize: 18,
                 ),
-
-                const SizedBox(width: 10),
-
+                const SizedBox(width: 12),
                 Text(
-                  "Statistics",
+                  "Detailed Action Metrics",
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 17,
                     fontWeight: FontWeight.bold,
                     color: colors.primaryText,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 15),
-
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
-                vertical: 12,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.green.withOpacity(.10),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.white.withOpacity(.08),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                   Text(
-                    "⬆ Increase",
-                    style: TextStyle(
-                      color: colors.primaryText,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    "$increaseCount",
-                    style: const TextStyle(
-                      color: Colors.greenAccent,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
+            const SizedBox(height: 18),
+            buildStatTile(
+              title: "Increments (+)",
+              value: increaseCount,
+              icon: Icons.arrow_upward_rounded,
+              color: const Color(0xFF10B981),
+              colors: colors,
+              isDark: isDark,
             ),
-            const SizedBox(height: 12),
-
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
-                vertical: 12,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.red.withOpacity(.10),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.white.withOpacity(.08),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                   Text(
-                    "⬇ Decrease",
-                    style: TextStyle(
-                      color: colors.primaryText,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    "$decreaseCount",
-                    style: const TextStyle(
-                      color: Colors.redAccent,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
+            buildStatTile(
+              title: "Decrements (-)",
+              value: decreaseCount,
+              icon: Icons.arrow_downward_rounded,
+              color: const Color(0xFFEF4444),
+              colors: colors,
+              isDark: isDark,
             ),
-            const SizedBox(height: 12),
-
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
-                vertical: 12,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.orange.withOpacity(.10),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.white.withOpacity(.08),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                   Text(
-                    "🔄 Reset",
-                    style: TextStyle(
-                      color: colors.primaryText,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    "$resetCount",
-                    style: const TextStyle(
-                      color: Colors.amber,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
+            buildStatTile(
+              title: "Resets (↺)",
+              value: resetCount,
+              icon: Icons.refresh_rounded,
+              color: const Color(0xFFF59E0B),
+              colors: colors,
+              isDark: isDark,
             ),
           ],
         ),

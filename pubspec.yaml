@@ -31,12 +31,18 @@ dependencies:
   flutter:
     sdk: flutter
 
-  top_snackbar_flutter: ^3.1.0
+  top_snackbar_flutter: ^3.4.0
   shared_preferences: ^2.5.3
   intl: ^0.20.2
-  flutter_soloud: ^3.3.0
+  flutter_soloud: ^4.1.5
   vibration: ^3.1.3
   toastification: ^3.0.3
+  confetti: ^0.8.0
+  fl_chart: ^1.2.0
+  share_plus: ^13.3.0
+  flutter_tts: ^4.2.2
+  wakelock_plus: ^1.2.11
+  path_provider: ^2.1.5
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
@@ -67,6 +73,7 @@ flutter:
 
   assets:
     - assets/sounds/click.mp3
+    - assets/backgrounds/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
