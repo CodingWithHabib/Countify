@@ -570,13 +570,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildStylizedCLogo() {
-    return const SizedBox(
-      width: 38,
-      height: 38,
-      child: CustomPaint(
-        painter: CLogoPainter(),
-      ),
-    );
+    return const LiveCountifyLogo(size: 38);
   }
 
   @override
