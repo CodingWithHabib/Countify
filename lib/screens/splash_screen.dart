@@ -82,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF060911),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
@@ -129,7 +129,7 @@ class _SplashScreenState extends State<SplashScreen>
                             child: Container(
                               decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Color(0xFF060911),
+                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -151,10 +151,6 @@ class _SplashScreenState extends State<SplashScreen>
                               ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                            ),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.2),
-                              width: 1.5,
                             ),
                             boxShadow: [
                               BoxShadow(
@@ -200,14 +196,8 @@ class _SplashScreenState extends State<SplashScreen>
                 style: TextStyle(
                   fontSize: 38,
                   fontWeight: FontWeight.w900,
-                  color: Colors.white,
+                  color: Color(0xFF0F172A),
                   letterSpacing: 1.8,
-                  shadows: [
-                    Shadow(
-                      color: Color(0xFF00E5FF),
-                      blurRadius: 18,
-                    ),
-                  ],
                 ),
               ),
 
@@ -217,10 +207,10 @@ class _SplashScreenState extends State<SplashScreen>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.08),
+                  color: const Color(0xFF00E5FF).withOpacity(0.12),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: const Color(0xFF00E5FF).withOpacity(0.35),
+                    color: const Color(0xFF00E5FF).withOpacity(0.4),
                   ),
                 ),
                 child: const Text(
@@ -228,7 +218,7 @@ class _SplashScreenState extends State<SplashScreen>
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF00E5FF),
+                    color: Color(0xFF00B0FF),
                     letterSpacing: 0.8,
                   ),
                 ),
@@ -256,7 +246,7 @@ class _SplashScreenState extends State<SplashScreen>
                               style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white70,
+                                color: Color(0xFF475569),
                               ),
                             ),
                           ),
@@ -265,7 +255,7 @@ class _SplashScreenState extends State<SplashScreen>
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w900,
-                              color: Color(0xFF00E5FF),
+                              color: Color(0xFF00B0FF),
                             ),
                           ),
                         ],
@@ -277,7 +267,7 @@ class _SplashScreenState extends State<SplashScreen>
                         child: LinearProgressIndicator(
                           value: progress,
                           minHeight: 8,
-                          backgroundColor: Colors.white12,
+                          backgroundColor: Colors.grey.shade200,
                           valueColor: const AlwaysStoppedAnimation<Color>(
                             Color(0xFF00E5FF),
                           ),
@@ -294,7 +284,7 @@ class _SplashScreenState extends State<SplashScreen>
                 "Countify Pro • Version 1.0.0",
                 style: TextStyle(
                   fontSize: 11,
-                  color: Colors.white38,
+                  color: Color(0xFF94A3B8),
                   fontWeight: FontWeight.w500,
                   letterSpacing: 1.0,
                 ),
