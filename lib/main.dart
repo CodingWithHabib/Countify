@@ -6,7 +6,6 @@ import 'screens/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await ThemeService.init();
   runApp(const MyApp());
 }
 
