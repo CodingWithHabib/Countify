@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/storage_service.dart';
 import '../services/theme_detection_service.dart';
+import '../services/ad_service.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'workspace_screen.dart';
 
 class CategoryHubScreen extends StatefulWidget {
@@ -27,10 +29,31 @@ class _CategoryHubScreenState extends State<CategoryHubScreen> {
     "Productivity",
   ];
 
+  BannerAd? _bannerAd;
+  bool _isBannerAdLoaded = false;
+
   @override
   void initState() {
     super.initState();
     _loadCategoryCounts();
+    _initBannerAd();
+  }
+
+  void _initBannerAd() {
+    _bannerAd = AdService.createBannerAd(
+      onAdLoaded: () {
+        if (mounted) setState(() => _isBannerAdLoaded = true);
+      },
+      onAdFailed: (err) {
+        if (mounted) setState(() => _isBannerAdLoaded = false);
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
   }
 
   Future<void> _loadCategoryCounts() async {
@@ -422,6 +445,33 @@ class _CategoryHubScreenState extends State<CategoryHubScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
+
+                // Google AdMob Sponsor Banner Card
+                if (_isBannerAdLoaded && _bannerAd != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 6),
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF0F172A).withOpacity(0.85),
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                            color: const Color(0xFF00A896).withOpacity(0.35),
+                          ),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: SizedBox(
+                            width: _bannerAd!.size.width.toDouble(),
+                            height: _bannerAd!.size.height.toDouble(),
+                            child: AdWidget(ad: _bannerAd!),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
                 // Premium Grid Cards
                 Expanded(
                   child: _isLoading
