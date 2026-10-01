@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'theme/app_theme.dart';
 import 'services/theme_service.dart';
+import 'services/ad_service.dart';
 import 'screens/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await ThemeService.init();
+  await AdService.init();
   runApp(const MyApp());
 }
 

@@ -15,6 +15,8 @@ import '../services/sound_service.dart';
 import '../services/toast_service.dart';
 import '../services/theme_service.dart';
 import '../services/auth_service.dart';
+import '../services/ad_service.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../models/history_entry.dart';
 import '../models/counter_model.dart';
@@ -70,6 +72,9 @@ class _HomeScreenState extends State<HomeScreen>
   late AnimationController _bgAnimationController;
   late AnimationController _ringPulseController;
 
+  BannerAd? _bannerAd;
+  bool _isBannerAdLoaded = false;
+
   @override
   void initState() {
     super.initState();
@@ -85,6 +90,7 @@ class _HomeScreenState extends State<HomeScreen>
 
     SoundService.init();
     VibrationService.init();
+    _initBannerAd();
     loadCount().then((_) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _checkFirstTimeAuthPrompt();
@@ -92,10 +98,22 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
+  void _initBannerAd() {
+    _bannerAd = AdService.createBannerAd(
+      onAdLoaded: () {
+        if (mounted) setState(() => _isBannerAdLoaded = true);
+      },
+      onAdFailed: (err) {
+        if (mounted) setState(() => _isBannerAdLoaded = false);
+      },
+    );
+  }
+
   @override
   void dispose() {
     _bgAnimationController.dispose();
     _ringPulseController.dispose();
+    _bannerAd?.dispose();
     super.dispose();
   }
 
@@ -281,6 +299,10 @@ class _HomeScreenState extends State<HomeScreen>
 
     await updateStreak();
     await checkAchievement();
+
+    if (count == dailyGoal) {
+      AdService.showInterstitialAd();
+    }
 
     Future.delayed(const Duration(milliseconds: 200), () {
       if (!mounted) return;
@@ -724,11 +746,35 @@ class _HomeScreenState extends State<HomeScreen>
                   // Quick Access Bar
                   _buildQuickAccessBar(colors),
 
-                  const SizedBox(height: 90),
+                  const SizedBox(height: 140), // Space for bottom banner & nav
                 ],
               ),
             ),
           ),
+
+          // Google AdMob Adaptive Banner Ad
+          if (_isBannerAdLoaded && _bannerAd != null)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 78,
+              child: Center(
+                child: Container(
+                  width: _bannerAd!.size.width.toDouble(),
+                  height: _bannerAd!.size.height.toDouble(),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                  child: AdWidget(ad: _bannerAd!),
+                ),
+              ),
+            ),
 
           // Transparent Glassmorphic Bottom Navigation Bar
           Positioned(

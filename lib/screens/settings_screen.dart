@@ -8,6 +8,7 @@ import '../services/sound_service.dart';
 import '../services/vibration_service.dart';
 import '../services/theme_service.dart';
 import '../services/toast_service.dart';
+import '../services/ad_service.dart';
 import '../dialogs/goal_dialog.dart';
 import '../theme/app_theme_colors.dart';
 import '../widgets/live_animated_icon.dart';
@@ -578,6 +579,11 @@ class _SettingsScreenState extends State<SettingsScreen>
 
                   const SizedBox(height: 22),
 
+                  // Rewarded Sponsor Video Ad Section
+                  _buildRewardedAdCard(colors, isDark),
+
+                  const SizedBox(height: 22),
+
                   // Audio & Haptic Feedback Section
                   _buildSectionHeader(
                     title: "Audio & Haptic Feedback",
@@ -1074,6 +1080,111 @@ class _SettingsScreenState extends State<SettingsScreen>
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildRewardedAdCard(AppThemeColors colors, bool isDark) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: const Color(0xFF8B5CF6).withOpacity(0.4),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF8B5CF6).withOpacity(0.12),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const LiveAnimatedIcon(
+                icon: Icons.card_giftcard_rounded,
+                color: Color(0xFF8B5CF6),
+                size: 42,
+                iconSize: 20,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "SUPPORT & EARN REWARDS 🎁",
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0,
+                        color: colors.secondaryText,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      "Watch Video for 24H Ad-Free Pass",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: colors.primaryText,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            "Watch a short 15-second sponsor video to support Countify and unlock 24-hour ad-free pass!",
+            style: TextStyle(
+              fontSize: 12,
+              color: colors.secondaryText,
+              height: 1.35,
+            ),
+          ),
+          const SizedBox(height: 14),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF8B5CF6),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              icon: const Icon(Icons.play_circle_fill_rounded, color: Colors.white, size: 20),
+              label: const Text(
+                "WATCH SPONSOR VIDEO (+100 REWARD)",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+              onPressed: () {
+                AdService.showRewardedAd(
+                  onUserEarnedReward: (reward) {
+                    ToastService.success(
+                      context,
+                      "Reward Earned! 🎁",
+                      "Thank you for supporting Countify! 24-Hour Pass Unlocked.",
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
