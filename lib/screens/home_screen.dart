@@ -779,14 +779,15 @@ class _HomeScreenState extends State<HomeScreen>
             ),
           ),
 
-          // Clean Flush Bottom AdMob Banner Strip
+          // Clean Flush Bottom AdMob Banner Strip Below Bottom Nav
           if (_isBannerAdLoaded && _bannerAd != null)
             Positioned(
               left: 0,
               right: 0,
-              bottom: 72,
+              bottom: 0,
               child: Center(
-                child: SizedBox(
+                child: Container(
+                  color: isDark ? const Color(0xFF0F172A) : Colors.white,
                   width: _bannerAd!.size.width.toDouble(),
                   height: _bannerAd!.size.height.toDouble(),
                   child: AdWidget(ad: _bannerAd!),
@@ -794,11 +795,13 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ),
 
-          // Transparent Glassmorphic Bottom Navigation Bar
+          // Transparent Glassmorphic Bottom Navigation Bar (Right Above Banner Ad)
           Positioned(
             left: 0,
             right: 0,
-            bottom: 0,
+            bottom: (_isBannerAdLoaded && _bannerAd != null)
+                ? _bannerAd!.size.height.toDouble() + 4
+                : 0,
             child: _buildLuxuryBottomNav(colors, isDark),
           ),
         ],
@@ -1127,7 +1130,7 @@ class _HomeScreenState extends State<HomeScreen>
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: isDark ? const Color(0xFF1E293B) : Colors.white.withOpacity(0.65),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isDark ? Colors.white12 : Colors.black12,
@@ -1205,7 +1208,7 @@ class _HomeScreenState extends State<HomeScreen>
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          color: isDark ? const Color(0xFF1E293B) : Colors.white.withOpacity(0.65),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: const Color(0xFF00E5FF).withOpacity(0.4),
@@ -1363,7 +1366,7 @@ class _HomeScreenState extends State<HomeScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          color: isDark ? const Color(0xFF1E293B) : Colors.white.withOpacity(0.65),
           borderRadius: BorderRadius.circular(22),
           border: Border.all(
             color: color.withOpacity(0.4),
@@ -1551,7 +1554,7 @@ class _HomeScreenState extends State<HomeScreen>
                 width: 52,
                 height: 52,
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                  color: isDark ? const Color(0xFF1E293B) : Colors.white.withOpacity(0.65),
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(
                     color: color.withOpacity(0.4),
