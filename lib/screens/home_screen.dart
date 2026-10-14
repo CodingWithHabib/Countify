@@ -748,84 +748,26 @@ class _HomeScreenState extends State<HomeScreen>
 
                   const SizedBox(height: 18),
 
-                  // Native Embedded AdMob Glass Card on Main Screen
-                  if (_isBannerAdLoaded && _bannerAd != null)
-                    Center(
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 6, bottom: 6),
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.35),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: const Color(0xFF00E5FF).withOpacity(0.3),
-                            width: 1.2,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF00E5FF).withOpacity(0.08),
-                              blurRadius: 12,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 6, left: 6, right: 6),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFF00E5FF).withOpacity(0.2),
-                                          borderRadius: BorderRadius.circular(6),
-                                        ),
-                                        child: const Text(
-                                          "SPONSOR",
-                                          style: TextStyle(
-                                            color: Color(0xFF00E5FF),
-                                            fontSize: 8,
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: 0.8,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 6),
-                                      const Text(
-                                        "Supported Partner",
-                                        style: TextStyle(
-                                          color: Colors.white54,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const Icon(Icons.info_outline_rounded, size: 12, color: Colors.white38),
-                                ],
-                              ),
-                            ),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: SizedBox(
-                                width: _bannerAd!.size.width.toDouble(),
-                                height: _bannerAd!.size.height.toDouble(),
-                                child: AdWidget(ad: _bannerAd!),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                  const SizedBox(height: 90), // Space for bottom nav
+                  const SizedBox(height: 125), // Space for bottom banner & nav
                 ],
               ),
             ),
           ),
+
+          // Clean Flush Bottom AdMob Banner Strip
+          if (_isBannerAdLoaded && _bannerAd != null)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 72,
+              child: Center(
+                child: SizedBox(
+                  width: _bannerAd!.size.width.toDouble(),
+                  height: _bannerAd!.size.height.toDouble(),
+                  child: AdWidget(ad: _bannerAd!),
+                ),
+              ),
+            ),
 
           // Transparent Glassmorphic Bottom Navigation Bar
           Positioned(
