@@ -598,15 +598,16 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<AppThemeColors>()!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final double goalProgress =
         dailyGoal > 0 ? (count / dailyGoal).clamp(0.0, 1.0) : 0.0;
     final int goalPct = (goalProgress * 100).toInt();
 
     return Scaffold(
-      backgroundColor: const Color(0xFF090D16),
+      backgroundColor: isDark ? const Color(0xFF090D16) : const Color(0xFFF8FAFC),
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: isDark ? const Color(0xFF090D16) : const Color(0xFFF8FAFC),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         automaticallyImplyLeading: false,
@@ -659,6 +660,7 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
               );
             },
+            isDark: isDark,
           ),
           const SizedBox(width: 8),
           // 🏆 Transparent Glass Achievements Pill
@@ -680,40 +682,65 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
               );
             },
+            isDark: isDark,
           ),
           const SizedBox(width: 16),
         ],
       ),
       body: Stack(
         children: [
-          // Mountain Landscape Background
-          Positioned.fill(
-            child: Image.asset(
-              'assets/backgrounds/nature_bg.png',
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                color: const Color(0xFF0F172A),
-              ),
-            ),
-          ),
-
-          // Gentle Gradient Overlay for Readability
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.30),
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.55),
-                  ],
-                  stops: const [0.0, 0.40, 1.0],
+          // Custom Pastel Mesh Aura Blurs for Custom Light Theme Background (No Image!)
+          if (!isDark) ...[
+            Positioned(
+              top: -80,
+              left: -60,
+              child: Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF00E5FF).withOpacity(0.18),
                 ),
               ),
             ),
-          ),
+            Positioned(
+              top: 180,
+              right: -80,
+              child: Container(
+                width: 280,
+                height: 280,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF8B5CF6).withOpacity(0.12),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 80,
+              left: -40,
+              child: Container(
+                width: 260,
+                height: 260,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF10B981).withOpacity(0.15),
+                ),
+              ),
+            ),
+          ] else ...[
+            Positioned(
+              top: -80,
+              right: -60,
+              child: Container(
+                width: 280,
+                height: 280,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF00E5FF).withOpacity(0.08),
+                ),
+              ),
+            ),
+          ],
 
           // Main Scrollable Dashboard Content
           SafeArea(
@@ -724,29 +751,27 @@ class _HomeScreenState extends State<HomeScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Greeting Header Banner
-                  _buildGreetingBanner(colors),
+                  _buildGreetingBanner(colors, isDark),
 
                   const SizedBox(height: 20),
 
                   // Central Hero Section
-                  _buildCentralHeroSection(colors),
+                  _buildCentralHeroSection(colors, isDark),
 
                   const SizedBox(height: 20),
 
                   // Daily Goal Glass Capsule
-                  _buildDailyGoalCapsule(colors, goalProgress, goalPct),
+                  _buildDailyGoalCapsule(colors, isDark, goalProgress, goalPct),
 
                   const SizedBox(height: 20),
 
                   // 3 Large Glass Action Touch Cards (Increase | Decrease | Reset)
-                  _buildThreeTouchActionCards(),
+                  _buildThreeTouchActionCards(colors, isDark),
 
                   const SizedBox(height: 22),
 
                   // Quick Access Bar
-                  _buildQuickAccessBar(colors),
-
-                  const SizedBox(height: 18),
+                  _buildQuickAccessBar(colors, isDark),
 
                   const SizedBox(height: 125), // Space for bottom banner & nav
                 ],
@@ -774,7 +799,7 @@ class _HomeScreenState extends State<HomeScreen>
             left: 0,
             right: 0,
             bottom: 0,
-            child: _buildLuxuryBottomNav(colors),
+            child: _buildLuxuryBottomNav(colors, isDark),
           ),
         ],
       ),
@@ -787,6 +812,7 @@ class _HomeScreenState extends State<HomeScreen>
     String? badgeText,
     Color? badgeColor,
     required VoidCallback onTap,
+    required bool isDark,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -798,13 +824,13 @@ class _HomeScreenState extends State<HomeScreen>
             height: 40,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.black.withOpacity(0.35),
+              color: isDark ? Colors.black.withOpacity(0.35) : Colors.white,
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
+                color: isDark ? Colors.white.withOpacity(0.2) : Colors.black12,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
+                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
                   blurRadius: 8,
                 ),
               ],
@@ -821,7 +847,7 @@ class _HomeScreenState extends State<HomeScreen>
                 decoration: BoxDecoration(
                   color: badgeColor ?? Colors.red,
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.black, width: 1.5),
+                  border: Border.all(color: isDark ? Colors.black : Colors.white, width: 1.5),
                 ),
                 child: Text(
                   badgeText,
@@ -839,7 +865,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   // Greeting Header Banner
-  Widget _buildGreetingBanner(AppThemeColors colors) {
+  Widget _buildGreetingBanner(AppThemeColors colors, bool isDark) {
     final dateStr = DateFormat("E, d MMM").format(DateTime.now());
 
     return Row(
@@ -851,9 +877,9 @@ class _HomeScreenState extends State<HomeScreen>
             children: [
               Text(
                 greetingText,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
-                  color: Colors.white70,
+                  color: colors.secondaryText,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -862,10 +888,10 @@ class _HomeScreenState extends State<HomeScreen>
                 children: [
                   Text(
                     userName,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: colors.primaryText,
                     ),
                   ),
                   const SizedBox(width: 6),
@@ -873,11 +899,11 @@ class _HomeScreenState extends State<HomeScreen>
                 ],
               ),
               const SizedBox(height: 6),
-              const Text(
+              Text(
                 "Progress is not about being perfect, it's about being consistent.",
                 style: TextStyle(
                   fontSize: 11,
-                  color: Colors.white60,
+                  color: colors.secondaryText,
                   height: 1.3,
                 ),
               ),
@@ -889,11 +915,17 @@ class _HomeScreenState extends State<HomeScreen>
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.35),
+            color: isDark ? Colors.black.withOpacity(0.35) : Colors.white,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: Colors.white24,
+              color: isDark ? Colors.white24 : Colors.black12,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+                blurRadius: 8,
+              ),
+            ],
           ),
           child: Row(
             children: [
@@ -902,10 +934,10 @@ class _HomeScreenState extends State<HomeScreen>
               const SizedBox(width: 6),
               Text(
                 dateStr,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: colors.primaryText,
                 ),
               ),
             ],
@@ -916,7 +948,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   // Central Hero Section
-  Widget _buildCentralHeroSection(AppThemeColors colors) {
+  Widget _buildCentralHeroSection(AppThemeColors colors, bool isDark) {
     return Row(
       children: [
         // Left Compact Glass Card (Today's Count)
@@ -928,6 +960,7 @@ class _HomeScreenState extends State<HomeScreen>
             icon: Icons.arrow_upward_rounded,
             iconColor: const Color(0xFF10B981),
             colors: colors,
+            isDark: isDark,
           ),
         ),
 
@@ -973,14 +1006,14 @@ class _HomeScreenState extends State<HomeScreen>
                       child: Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: const Color(0xFF090F1D).withOpacity(0.78),
+                          color: isDark ? const Color(0xFF090F1D).withOpacity(0.85) : Colors.white,
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.28),
+                            color: isDark ? Colors.white.withOpacity(0.28) : Colors.black12,
                             width: 1.5,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF00E5FF).withOpacity(0.25),
+                              color: const Color(0xFF00E5FF).withOpacity(isDark ? 0.25 : 0.12),
                               blurRadius: 12,
                             ),
                           ],
@@ -1010,23 +1043,23 @@ class _HomeScreenState extends State<HomeScreen>
                                   style: TextStyle(
                                     fontSize: 42,
                                     fontWeight: FontWeight.w900,
-                                    color: countColor,
-                                    shadows: [
+                                    color: isDark ? countColor : const Color(0xFF0F172A),
+                                    shadows: isDark ? [
                                       Shadow(
                                         color: countColor.withOpacity(0.7),
                                         blurRadius: 14,
                                       ),
-                                    ],
+                                    ] : null,
                                   ),
                                 ),
                               ),
                               const SizedBox(height: 2),
-                              const Text(
+                              Text(
                                 "Current Count",
                                 style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white70,
+                                  color: colors.secondaryText,
                                 ),
                               ),
                             ],
@@ -1076,6 +1109,7 @@ class _HomeScreenState extends State<HomeScreen>
             icon: Icons.workspace_premium_rounded,
             iconColor: const Color(0xFF8B5CF6),
             colors: colors,
+            isDark: isDark,
           ),
         ),
       ],
@@ -1088,18 +1122,19 @@ class _HomeScreenState extends State<HomeScreen>
     required IconData icon,
     required Color iconColor,
     required AppThemeColors colors,
+    required bool isDark,
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.35),
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.white.withOpacity(0.18),
+          color: isDark ? Colors.white12 : Colors.black12,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -1112,14 +1147,14 @@ class _HomeScreenState extends State<HomeScreen>
             height: 36,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: iconColor.withOpacity(0.25),
+              color: iconColor.withOpacity(0.18),
               border: Border.all(
-                color: iconColor.withOpacity(0.5),
+                color: iconColor.withOpacity(0.4),
                 width: 1.2,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: iconColor.withOpacity(0.35),
+                  color: iconColor.withOpacity(0.25),
                   blurRadius: 8,
                 ),
               ],
@@ -1129,19 +1164,19 @@ class _HomeScreenState extends State<HomeScreen>
           const SizedBox(height: 8),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 19,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: colors.primaryText,
             ),
           ),
           const SizedBox(height: 2),
           Text(
             title,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 9,
-              color: Colors.white60,
+              color: colors.secondaryText,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -1152,7 +1187,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   // Daily Goal Transparent Glass Capsule Card
   Widget _buildDailyGoalCapsule(
-      AppThemeColors colors, double goalProgress, int goalPct) {
+      AppThemeColors colors, bool isDark, double goalProgress, int goalPct) {
     return GestureDetector(
       onTap: () async {
         final goal = await showGoalDialog(
@@ -1170,7 +1205,7 @@ class _HomeScreenState extends State<HomeScreen>
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.35),
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: const Color(0xFF00E5FF).withOpacity(0.4),
@@ -1178,7 +1213,7 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF00E5FF).withOpacity(0.12),
+              color: const Color(0xFF00E5FF).withOpacity(isDark ? 0.12 : 0.08),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),
@@ -1191,9 +1226,9 @@ class _HomeScreenState extends State<HomeScreen>
               height: 38,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF00E5FF).withOpacity(0.2),
+                color: const Color(0xFF00E5FF).withOpacity(0.18),
                 border: Border.all(
-                  color: const Color(0xFF00E5FF).withOpacity(0.5),
+                  color: const Color(0xFF00E5FF).withOpacity(0.4),
                 ),
               ),
               child: const Icon(Icons.track_changes_rounded,
@@ -1207,20 +1242,20 @@ class _HomeScreenState extends State<HomeScreen>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         "Daily Goal",
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: colors.primaryText,
                         ),
                       ),
                       Text(
                         "$count / $dailyGoal",
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white70,
+                          color: colors.secondaryText,
                         ),
                       ),
                     ],
@@ -1231,7 +1266,7 @@ class _HomeScreenState extends State<HomeScreen>
                     child: LinearProgressIndicator(
                       value: goalProgress,
                       minHeight: 8,
-                      backgroundColor: Colors.white12,
+                      backgroundColor: isDark ? Colors.white12 : Colors.grey.shade200,
                       valueColor:
                           const AlwaysStoppedAnimation(Color(0xFF00E5FF)),
                     ),
@@ -1249,8 +1284,8 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ),
             const SizedBox(width: 4),
-            const Icon(Icons.chevron_right_rounded,
-                color: Colors.white60, size: 20),
+            Icon(Icons.chevron_right_rounded,
+                color: colors.secondaryText, size: 20),
           ],
         ),
       ),
@@ -1258,7 +1293,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   // 3 Large Glass Action Touch Cards (Increase | Decrease | Reset)
-  Widget _buildThreeTouchActionCards() {
+  Widget _buildThreeTouchActionCards(AppThemeColors colors, bool isDark) {
     return Row(
       children: [
         // Increase Card
@@ -1269,6 +1304,8 @@ class _HomeScreenState extends State<HomeScreen>
             icon: Icons.add_rounded,
             color: const Color(0xFF10B981),
             onTap: increaseCount,
+            colors: colors,
+            isDark: isDark,
           ),
         ),
         const SizedBox(width: 10),
@@ -1280,6 +1317,8 @@ class _HomeScreenState extends State<HomeScreen>
             icon: Icons.remove_rounded,
             color: const Color(0xFFEF4444),
             onTap: decreaseCount,
+            colors: colors,
+            isDark: isDark,
           ),
         ),
         const SizedBox(width: 10),
@@ -1298,6 +1337,8 @@ class _HomeScreenState extends State<HomeScreen>
                 showResetToast(true);
               }
             },
+            colors: colors,
+            isDark: isDark,
           ),
         ),
       ],
@@ -1310,6 +1351,8 @@ class _HomeScreenState extends State<HomeScreen>
     required IconData icon,
     required Color color,
     required VoidCallback onTap,
+    required AppThemeColors colors,
+    required bool isDark,
   }) {
     return GestureDetector(
       onTap: () async {
@@ -1320,7 +1363,7 @@ class _HomeScreenState extends State<HomeScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.35),
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
           borderRadius: BorderRadius.circular(22),
           border: Border.all(
             color: color.withOpacity(0.4),
@@ -1328,7 +1371,7 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.12),
+              color: color.withOpacity(isDark ? 0.12 : 0.08),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -1358,18 +1401,18 @@ class _HomeScreenState extends State<HomeScreen>
             const SizedBox(height: 10),
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: colors.primaryText,
               ),
             ),
             const SizedBox(height: 2),
             Text(
               subtitle,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 10,
-                color: Colors.grey,
+                color: colors.secondaryText,
               ),
             ),
           ],
@@ -1379,24 +1422,24 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   // Quick Access Bar
-  Widget _buildQuickAccessBar(AppThemeColors colors) {
+  Widget _buildQuickAccessBar(AppThemeColors colors, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Row(
+            Row(
               children: [
-                Icon(Icons.bolt_rounded,
+                const Icon(Icons.bolt_rounded,
                     color: Color(0xFF00E5FF), size: 18),
-                SizedBox(width: 6),
+                const SizedBox(width: 6),
                 Text(
                   "Quick Access",
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: colors.primaryText,
                   ),
                 ),
               ],
@@ -1410,12 +1453,12 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                 );
               },
-              child: const Text(
+              child: Text(
                 "View All >",
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white60,
+                  color: colors.secondaryText,
                 ),
               ),
             ),
@@ -1441,6 +1484,7 @@ class _HomeScreenState extends State<HomeScreen>
                 );
                 loadCount();
               },
+              isDark: isDark,
             ),
             _buildQuickAccessPill(
               label: "Settings",
@@ -1459,6 +1503,7 @@ class _HomeScreenState extends State<HomeScreen>
                   await loadCount();
                 }
               },
+              isDark: isDark,
             ),
             _buildQuickAccessPill(
               label: "More",
@@ -1479,6 +1524,7 @@ class _HomeScreenState extends State<HomeScreen>
                   onRefreshTheme: () => MyApp.of(context)?.refreshTheme(),
                 );
               },
+              isDark: isDark,
             ),
           ],
         ),
@@ -1492,6 +1538,7 @@ class _HomeScreenState extends State<HomeScreen>
     required Color color,
     String? badgeText,
     required VoidCallback onTap,
+    required bool isDark,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -1504,14 +1551,14 @@ class _HomeScreenState extends State<HomeScreen>
                 width: 52,
                 height: 52,
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.35),
+                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(
                     color: color.withOpacity(0.4),
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: color.withOpacity(0.12),
+                      color: color.withOpacity(isDark ? 0.12 : 0.06),
                       blurRadius: 8,
                     ),
                   ],
@@ -1544,10 +1591,10 @@ class _HomeScreenState extends State<HomeScreen>
           const SizedBox(height: 6),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w500,
-              color: Colors.white70,
+              color: isDark ? Colors.white70 : Colors.black87,
             ),
           ),
         ],
@@ -1556,19 +1603,21 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   // Transparent Glassmorphic Bottom Navigation Bar
-  Widget _buildLuxuryBottomNav(AppThemeColors colors) {
+  Widget _buildLuxuryBottomNav(AppThemeColors colors, bool isDark) {
     return Container(
       margin: const EdgeInsets.all(12),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A).withOpacity(0.88),
+        color: isDark
+            ? const Color(0xFF0F172A).withOpacity(0.92)
+            : Colors.white.withOpacity(0.94),
         borderRadius: BorderRadius.circular(30),
         border: Border.all(
-          color: Colors.white.withOpacity(0.12),
+          color: (isDark ? Colors.white : Colors.black).withOpacity(0.08),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.4),
+            color: Colors.black.withOpacity(isDark ? 0.35 : 0.08),
             blurRadius: 20,
             offset: const Offset(0, 6),
           ),
